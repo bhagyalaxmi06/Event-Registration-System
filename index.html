@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smart Event Registration</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+</head>
+
+<body>
+<header><h1>SMART EVENT REGISTRATION</h1></header>
+
+<div id="page1" class="page active">
+  <button onclick="showPage('registerPage')">Register Participant</button>
+  <button onclick="showPage('featuresPage')">Features</button>
+  <button onclick="showPage('databasePage')">View Database</button>
+</div>
+
+<div id="registerPage" class="page">
+  <input id="regName" placeholder="Name">
+  <input id="regEmail" placeholder="Email">
+  <input id="regPhone" placeholder="Phone">
+  <button onclick="registerParticipant()">Register</button>
+  <button onclick="showPage('page1')">Back</button>
+</div>
+
+<div id="featuresPage" class="page">
+  <input id="featID" placeholder="Enter ID">
+  <button onclick="searchParticipant()">Search</button>
+  <button onclick="deleteParticipant()">Delete</button>
+  <button onclick="checkInParticipant()">Check-In</button>
+  <button onclick="showStatistics()">Stats</button>
+  <div id="featResult"></div>
+  <button onclick="showPage('page1')">Back</button>
+</div>
+
+<div id="databasePage" class="page">
+  <input id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+  <div id="dbTable"></div>
+  <button onclick="showPage('page1')">Back</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
