@@ -4,44 +4,253 @@
 <meta charset="UTF-8">
 <title>Smart Event Registration</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
 
-<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#eef2ff;margin:0;padding:0;}
+header{background:#4f46e5;color:white;text-align:center;padding:20px;}
+.page{display:none;padding:20px;}
+.active{display:block;}
+
+button.icon-btn, button.action-btn, button.qr-btn, button.back-btn {
+  padding:10px;
+  margin:8px 0;
+  width:100%;
+  border:none;
+  border-radius:6px;
+  color:white;
+  cursor:pointer;
+}
+button.icon-btn{background:#4f46e5;font-size:18px;}
+button.action-btn{background:#4f46e5;}
+button.qr-btn{background:#6366f1;}
+button.back-btn{background:#ef4444;}
+input{width:100%;padding:10px;margin:8px 0;border:1px solid #aaa;border-radius:6px;}
+
+table{border-collapse:collapse;width:100%;}
+th,td{border:1px solid #ccc;padding:8px;text-align:center;}
+
+#searchInput{width:100%;padding:10px;margin-top:10px;border:1px solid #aaa;border-radius:6px;}
+
+#qrModal{
+  display:none;
+  position:fixed; top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+}
+#qrModalContent{
+  background:white;
+  padding:20px;
+  border-radius:8px;
+  text-align:center;
+}
+</style>
+
+<!-- Include QRCode.js library from CDN -->
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script> :contentReference[oaicite:2]{index=2}
+
 </head>
-
 <body>
+
 <header><h1>SMART EVENT REGISTRATION</h1></header>
 
-<div id="page1" class="page active">
-  <button onclick="showPage('registerPage')">Register Participant</button>
-  <button onclick="showPage('featuresPage')">Features</button>
-  <button onclick="showPage('databasePage')">View Database</button>
+<!-- PAGE 1: MENU -->
+<!-- UPDATED PAGE 1: ATTRACTIVE HERO -->
+<div id="page1" class="page active" style="text-align:center;
+     background: linear-gradient(135deg, #4f46e5, #6366f1);
+     color:white; padding:90px 20px; border-radius:0 0 30px 30px;
+     box-shadow:0 8px 15px rgba(0,0,0,0.2);">
+  
+  <h1 style="font-size:48px; font-weight:700; margin-bottom:10px;">
+    🚀 Welcome to Smart Event 2025
+  </h1>
+  <p style="font-size:20px; opacity:0.9; margin-bottom:30px;">
+    Register, Manage & Track Participants Easily
+  </p>
+
+  <button class="icon-btn" onclick="showPage('registerPage')"
+    style="background:#ffffff;color:#4f46e5;font-size:20px;transition:0.3s;">
+    📝 Register Participant
+  </button>
+
+  <button class="icon-btn" onclick="showPage('featuresPage')"
+    style="background:#22c55e;color:white;font-size:20px;transition:0.3s;">
+    ⚙️ Features & Actions
+  </button>
+
+  <button class="icon-btn" onclick="showPage('databasePage')"
+    style="background:#f59e0b;color:white;font-size:20px;transition:0.3s;">
+    📋 View Database
+  </button>
+
+  <div style="margin-top:40px; font-size:14px; opacity:0.8;">
+    📅 Event Date: 25 March 2025  |  📍 Bengaluru  |  ⏰ 10:00 AM
+  </div>
+
 </div>
 
+
+<!-- PAGE 2: REGISTER -->
 <div id="registerPage" class="page">
+  <h2>Register Participant</h2>
   <input id="regName" placeholder="Name">
   <input id="regEmail" placeholder="Email">
   <input id="regPhone" placeholder="Phone">
-  <button onclick="registerParticipant()">Register</button>
-  <button onclick="showPage('page1')">Back</button>
+  <button class="action-btn" onclick="registerParticipant()">Register</button>
+  <button class="back-btn" onclick="showPage('page1')">⬅ Back</button>
 </div>
 
+<!-- PAGE 3: FEATURES -->
 <div id="featuresPage" class="page">
-  <input id="featID" placeholder="Enter ID">
-  <button onclick="searchParticipant()">Search</button>
-  <button onclick="deleteParticipant()">Delete</button>
-  <button onclick="checkInParticipant()">Check-In</button>
-  <button onclick="showStatistics()">Stats</button>
+  <h2>Features</h2>
+  <input id="featID" placeholder="Enter ID or scan QR">
+  <button class="action-btn" onclick="searchParticipant()">🔍 Search</button>
+  <button class="action-btn" onclick="deleteParticipant()">❌ Delete</button>
+  <button class="action-btn" onclick="checkInParticipant()">✔️ Check-In</button>
+  <button class="action-btn" onclick="showStatistics()">📊 Stats</button>
   <div id="featResult"></div>
-  <button onclick="showPage('page1')">Back</button>
+  <button class="back-btn" onclick="showPage('page1')">⬅ Back</button>
 </div>
 
+<!-- PAGE 4: DATABASE -->
 <div id="databasePage" class="page">
-  <input id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+  <h2>Participant Database</h2>
+
+  <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+  <button class="action-btn" onclick="sortTable('id')">Sort by ID</button>
+  <button class="action-btn" onclick="sortTable('name')">Sort by Name</button>
+
   <div id="dbTable"></div>
-  <button onclick="showPage('page1')">Back</button>
+
+  <button class="back-btn" onclick="showPage('page1')">⬅ Back</button>
 </div>
 
-<script src="script.js"></script>
+<!-- QR MODAL -->
+<div id="qrModal">
+  <div id="qrModalContent">
+    <h3>Participant QR</h3>
+    <div id="qrCode"></div>
+    <button class="back-btn" onclick="closeQR()">Close</button>
+  </div>
+</div>
+
+<script>
+// STORAGE
+let participants = JSON.parse(localStorage.getItem("participants")) || [];
+let idCounter  = Number(localStorage.getItem("idCounter")) || 1000;
+
+function saveData(){
+  localStorage.setItem("participants", JSON.stringify(participants));
+  localStorage.setItem("idCounter", idCounter.toString());
+}
+
+// NAVIGATION
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='databasePage') renderDatabaseTable();
+}
+
+// REGISTER
+function registerParticipant(){
+  let n=document.getElementById("regName").value.trim();
+  let e=document.getElementById("regEmail").value.trim();
+  let p=document.getElementById("regPhone").value.trim();
+  if(!n||!e||!p){alert("All fields required");return;}
+  idCounter++;
+  participants.push({id:idCounter,name:n,email:e,phone:p,checked:false});
+  saveData();
+  alert("Registered! ID:"+idCounter);
+  document.getElementById("regName").value="";
+  document.getElementById("regEmail").value="";
+  document.getElementById("regPhone").value="";
+}
+
+// FEATURES
+function searchParticipant(){
+  let id=document.getElementById("featID").value.trim();
+  let p=participants.find(x=>x.id==id);
+  document.getElementById("featResult").innerText = p ? 
+    `${p.name} - ${p.email} [${p.checked?"Checked-In":"Pending"}]` : "Not found";
+}
+function deleteParticipant(){
+  let id=document.getElementById("featID").value.trim();
+  let i=participants.findIndex(x=>x.id==id);
+  if(i<0){alert("Not found");return;}
+  participants.splice(i,1); saveData(); alert("Deleted");
+}
+function checkInParticipant(){
+  let id=document.getElementById("featID").value.trim();
+  let p=participants.find(x=>x.id==id);
+  if(!p){alert("Not found");return;}
+  if(p.checked){alert("Already checked in");return;}
+  p.checked=true; saveData(); alert("Checked in");
+}
+function showStatistics(){
+  let total=participants.length;
+  let ch=participants.filter(p=>p.checked).length;
+  alert(`Total:${total}\nChecked-In:${ch}\nPending:${total-ch}`);
+}
+
+// DATABASE TABLE
+let currentSort={field:null,asc:true};
+
+function renderDatabaseTable(){
+  if(!participants.length){
+    document.getElementById("dbTable").innerHTML="<p>No data</p>";
+    return;
+  }
+  let html="<table id='fullTable'><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>QR</th></tr>";
+  participants.forEach(p=>{
+    html+=`<tr>
+      <td>${p.id}</td>
+      <td>${p.name}</td>
+      <td>${p.email}</td>
+      <td>${p.phone}</td>
+      <td>${p.checked?"Checked-In":"Pending"}</td>
+      <td><button class="qr-btn" onclick="showQR(${p.id})">Show QR</button></td>
+    </tr>`;
+  });
+  document.getElementById("dbTable").innerHTML=html+"</table>";
+}
+
+function filterTable(){
+  let input=document.getElementById("searchInput").value.toLowerCase();
+  let table=document.getElementById("fullTable");
+  if(!table)return;
+  for(let i=1;i<table.rows.length;i++){
+    let row=table.rows[i];
+    row.style.display=row.textContent.toLowerCase().includes(input)?"":"none";
+  }
+}
+
+function sortTable(field){
+  participants.sort((a,b)=>{
+    if(field==="name")
+      return currentSort.asc? a.name.localeCompare(b.name): b.name.localeCompare(a.name);
+    return currentSort.asc? a.id-b.id: b.id-a.id;
+  });
+  currentSort.asc=!currentSort.asc;
+  renderDatabaseTable(); filterTable();
+}
+
+// QR CODE
+function showQR(id){
+  document.getElementById("qrModal").style.display="flex";
+  document.getElementById("qrCode").innerHTML="";
+  new QRCode(document.getElementById("qrCode"), {
+    text: id.toString(),
+    width: 180,
+    height: 180
+  });  // uses qrcode.js library :contentReference[oaicite:3]{index=3}
+}
+function closeQR(){
+  document.getElementById("qrModal").style.display="none";
+}
+
+</script>
+
 </body>
 </html>
+
